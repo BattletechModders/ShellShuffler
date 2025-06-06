@@ -215,7 +215,10 @@ namespace ShellShuffler.Patches
                                     var restrictedAmmo = ModInit.modSettings.mechDefTagRestrictedAmmoList[key];
                                     foreach (var val in restrictedAmmo)
                                     {
-                                        removeDueToTagRestriction.Add(val, key);
+                                        if (!removeDueToTagRestriction.ContainsKey(val))
+                                        {
+                                            removeDueToTagRestriction[val] = key;
+                                        }
                                     }
                                 }
                             }
@@ -256,7 +259,7 @@ namespace ShellShuffler.Patches
                             var ammunitionLookup = alternateAmmunitions.ToDictionary(a => a.Description.Id, a => a);
                             foreach (var ammunitionBoxDef in alternateBoxDefsList)
                             {
-                                if (ammunitionLookup.TryGetValue(ammunitionBoxDef.AmmoID, out var matchedAmmunition))
+                                if (!possibleSelections.ContainsKey(ammunitionBoxDef) && ammunitionLookup.TryGetValue(ammunitionBoxDef.AmmoID, out var matchedAmmunition))
                                 {
                                     ModInit.modLog.LogMessage($"Adding {ammunitionBoxDef.Description.Id} ({ammunitionBoxDef.Tonnage}t) of ammunition {matchedAmmunition.Description.Id} to possible selections");
                                     possibleSelections.Add(ammunitionBoxDef, matchedAmmunition);
